@@ -41,12 +41,16 @@ def handle_login():
     data = request.get_json()
     user = User.query.filter_by(email=data['email']).first()
     if user and check_password_hash(user.password, data['password']):
-        access_token = create_access_token(identity= str(user.id))
+        access_token = create_access_token(identity=user.id)
         return jsonify({'token': access_token}), 200
     return jsonify({'error': 'Invalid credentials'}), 401
 
 
-@api.route('/private', methods=['POST'])
-# @jwt_required()
+@api.route('/private', methods=['GET'])
+@jwt_required()
 def handle_authorized():
-    pass
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    if user:
+        return jsonify(user.serialize()), 200
+    return jsonify({'error': 'User not found'}), 404

@@ -1,6 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		sessionStorage.removeItem("token");
+		navigate("/login");
+	};
 
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -14,6 +20,17 @@ export const Navbar = () => {
 					</Link>
 				</div>
 			</div>
+			<ul style={{ display: "flex", gap: "15px", listStyle: "none" }}>
+				<li><Link to="/">Home</Link></li>
+				<li><Link to="/signup">Signup</Link></li>
+				<li><Link to="/login">Login</Link></li>
+				<li><Link to="/private">Private</Link></li>
+				<li>
+					<button onClick={handleLogout} style={{ cursor: "pointer" }}>
+						Logout
+					</button>
+				</li>
+			</ul>
 		</nav>
 	);
 };
